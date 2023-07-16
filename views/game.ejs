@@ -10,34 +10,51 @@
     <link href="cards.css" rel="stylesheet">
 </head>
 
-<body>
+<body class="p-3 mb-2 bg-success text-white">
+
+    <!-- Header for Banker -->
     <% if (winner === "Banker"){ %>
-    <h1 class="display-6" style="color:#52db34">Banker's Hand - Wins!</h1>
-    <% } else if (winner === "Nobody") { %>
-    <h1 class="display-6">Banker's Hand - Draw!</h1>
+    <h1 class="display-6 text-center" style="color:#52db34">🎉 Banker's Hand - Wins! 🎉</h1>
+    <% } else if (winner === "None") { %>
+    <h1 class="display-6 text-center">Banker's Hand - Draw!</h1>
     <% } else {%>
-    <h1 class="display-6">Banker's Hand</h1>
+    <h1 class="display-6 text-center">Banker's Hand</h1>
     <% } %>
 
+    <!-- Total Points for Banker -->
+    <% if (showBankerCards === false){ %>
+    <p class="display-10 text-center">Total points: ???</p>
+    <% } else { %>
+    <p class="display-10 text-center">Total points: <%= bankerPoints %> </p>
+    <% } %>
+
+    <!-- Banker's Hand -->
     <div class="col hand hhand-compact active-hand">
 
         <% if (showBankerCards === false){ %>
-        <img class="cards" src="cards/<%= bankerCards[0].img %>" width="70">
-        <img class="cards" src="cards/Red_Back.svg" width="70">
+        <img class="cards" src="cards/<%= bankerCards[0].img %>">
+        <img class="cards" src="cards/Red_Back.svg">
         <% } else { %>
         <% for (let i = 0; i < bankerCards.length; i++){ %>
-        <img class="cards" src="cards/<%= bankerCards[i].img %>" width="70">
+        <img class="cards" src="cards/<%= bankerCards[i].img %>">
         <% } %>
         <% } %>
 
     </div>
 
+    <hr class="border border-danger border-2 opacity-50">
+
+    <!-- Header for Player -->
     <% if (winner === "Player"){ %>
-    <h1 class="display-6" style="color:#52db34">Player's Hand - Wins</h1>
+    <h1 class="display-6 text-center" style="color:#52db34">🎉 Player's Hand - Wins 🎉</h1>
     <% } else { %>
-    <h1 class="display-6">Player's Hand</h1>
+    <h1 class="display-6 text-center">Player's Hand</h1>
     <% } %>
 
+    <!-- Total Points for Player -->
+    <p class="display-10 text-center">Total points: <%= playerPoints %> </p>
+
+    <!-- Player's Hand -->
     <div class="col hand hhand-compact active-hand">
 
         <% for (let i = 0; i < playerCards.length; i++){ %>
@@ -45,11 +62,12 @@
         <% } %>
     </div>
 
-    <div>
+    <!-- Game Buttons: Hit, Stay and Next Game -->
+    <div class="text-center">
         <% if (showBankerCards === false && winner === ""){ %>
         <% if (playerPoints < 21) { %>
         <form method="post" action="/hit">
-            <button type="submit" style="width: 140px" class="btn btn-success btn-lg">Hit</button>
+            <button type="submit" style="width: 140px" class="btn btn-primary btn-lg">Hit</button>
         </form>
         <% } %>
         <form method="post" action="/stay">
@@ -57,7 +75,7 @@
         </form>
         <% } else { %>
         <form method="post" action="/nextgame">
-            <button type="submit" style="width: 140px" class="btn btn-success btn-lg">Next Game</button>
+            <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
         </form>
         <% } %>
     </div>

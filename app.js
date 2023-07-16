@@ -44,14 +44,15 @@ const startGame = function () {
 
 const settleGame = function () {
   winner = "";
+  showBankerCards = true;
 
-  // If the Player bust, then the game is over right away. Dealer doesn't need to draw.
+  // Scenario 1: Player busts. Game ends right away.
   if (playerPoints > 21) {
     // Game ends
     console.log("Player busts. Game over!");
     winner = "Banker";
   } else if (
-    // If the Player has a Natural, but the Banker doesn't, the game is over right away too.
+    // Scenario 2: Player has a Natural, but Banker doesn't.
     playerPoints === 21 &&
     checkNatural(playerCards) &&
     !checkNatural(bankerCards)
@@ -60,7 +61,6 @@ const settleGame = function () {
     winner = "Player";
   } else {
     // Dealer reveals his cards and deals more if he doesn't have 17.
-    showBankerCards = true;
 
     // Reveal banker's cards when player clicks on 'Stand'
     if (showBankerCards === true) {
@@ -73,10 +73,19 @@ const settleGame = function () {
       }
     }
 
-    if (bankerPoints > playerPoints) {
+    //Scenario 3: Banker busts.
+    if (bankerPoints > 21) {
+      winner = "Player";
+
+      // Scenario 4: Banker beats Player.
+    } else if (bankerPoints > playerPoints) {
       winner = "Banker";
+
+      // Scenario 5: Player beats Banker.
     } else if (bankerPoints < playerPoints) {
       winner = "Player";
+
+      // Scenario 6: Draws
     } else {
       winner = "None";
     }
