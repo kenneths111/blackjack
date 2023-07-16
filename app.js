@@ -1,12 +1,14 @@
 const express = require("express");
 const ejs = require("ejs");
 const { checkNatural } = require("./logic");
+const bodyParser = require("body-parser");
 const app = express();
 const logic = require(__dirname + "/logic.js");
 
 app.set("view engine", "ejs");
 app.use(express.static("images"));
 app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Define key game variables;
 
@@ -17,6 +19,8 @@ let bankerPoints;
 let showBankerCards;
 let deck;
 let winner = "";
+let wallet = 50;
+let bet;
 
 // Define Start Game function. I need to refactor this later to push this function to logic.js
 
@@ -129,6 +133,8 @@ app.post("/stay", function (req, res) {
 });
 
 app.post("/nextgame", function (req, res) {
+  bet = req.body.bet;
+  console.log(req.body.bet);
   startGame();
   winner = "";
   res.redirect("/");
