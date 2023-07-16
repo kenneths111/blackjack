@@ -71,7 +71,7 @@
     </form>
 
     <!-- If Player has hit 'Stay', then show 'Next Game' button -->
-    <% } else { %>
+    <% } else if (wallet >= 1) { %>
     <form method="post" action="/nextgame">
         <div class="input-group mb-3">
             <span class="input-group-text">Bet:</span>
@@ -81,6 +81,17 @@
             <span class="input-group-text">.00</span>
         </div>
         <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
+    </form>
+    <% } else { %>
+    <form method="post" action="/gameover">
+        <div class="input-group mb-3">
+            <span class="input-group-text">Bet:</span>
+            <span class="input-group-text">$</span>
+            <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= bet %>"
+                name="bet">
+            <span class="input-group-text">.00</span>
+        </div>
+        <button type="submit" style="width: 140px" class="btn btn-danger btn-lg">Game Over</button>
     </form>
     <% } %>
 </div>

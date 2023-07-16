@@ -19,7 +19,7 @@ let bankerPoints;
 let showBankerCards;
 let deck;
 let winner = "";
-let wallet = 50;
+let wallet = 100;
 let bet = 0;
 
 // Define Start Game function. I need to refactor this later to push this function to logic.js
@@ -160,6 +160,17 @@ app.post("/nextgame", function (req, res) {
   startGame();
   winner = "";
   res.redirect("/game");
+});
+
+app.post("/gameover", function (req, res) {
+  startGame();
+
+  // Reset all the game variables.
+  winner = "";
+  wallet = 100;
+  bet = 0;
+
+  res.redirect("/");
 });
 
 app.listen(process.env.PORT || 3000, function () {
