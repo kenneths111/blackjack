@@ -70,7 +70,7 @@
 
         <!-- If Player's points is less than 21, show 'Hit' button. Otherwise, disable 'Hit' button -->
         <% if (playerPoints < 21) { %>
-        <form method="post" action="/hit">
+        <form method="post" action="/hit" style="display: inline-block">
             <button type="submit" style="width: 140px" class="btn btn-primary btn-lg">Hit</button>
         </form>
         <% } else { %>
@@ -78,7 +78,7 @@
         <% } %>
 
         <!-- Show 'Stay' button no matter what. -->
-        <form method="post" action="/stay">
+        <form method="post" action="/stay" style="display: inline-block">
             <button type="submit" style="width: 140px" class="btn btn-danger btn-lg">Stay</button>
         </form>
 
