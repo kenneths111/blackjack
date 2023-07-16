@@ -73,10 +73,8 @@ exports.countPoints = function (hand) {
 
   // If points is above 21, check if you can change an Ace down to 1 point
   if (points > 21) {
-    console.log("Above 21 points:");
     for (let i = 0; i < hand.length; i++) {
       if (hand[i].value === 11) {
-        console.log(hand[i]);
         hand[i].value = 1;
         points -= 10;
         break;
@@ -88,4 +86,42 @@ exports.countPoints = function (hand) {
   console.log("Total points: " + points);
 
   return points;
+};
+
+// Check for Naturals
+exports.checkNatural = function (hand) {
+  if (hand.length != 2) {
+    return false;
+  }
+
+  let hasAce = false;
+  let hasPicture = false;
+
+  for (let i = 0; i < hand.length; i++) {
+    switch (hand[i].letter) {
+      case "A":
+        hasAce = true;
+        break;
+      case "J":
+        hasPicture = true;
+        break;
+      case "Q":
+        hasPicture = true;
+        break;
+      case "K":
+        hasPicture = true;
+        break;
+      case 10:
+        hasPicture = true;
+        break;
+      default:
+        break;
+    }
+  }
+
+  if (hasAce && hasPicture) {
+    return true;
+  } else {
+    return false;
+  }
 };
