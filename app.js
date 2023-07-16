@@ -53,7 +53,7 @@ const settleGame = function () {
     // Game ends
     console.log("Player busts. Game over!");
     winner = "Banker";
-    wallet -= bet;
+    wallet -= Number(bet);
   } else if (
     // Scenario 2: Player has a Natural, but Banker doesn't.
     playerPoints === 21 &&
@@ -62,7 +62,7 @@ const settleGame = function () {
   ) {
     console.log("Player has a Natural");
     winner = "Player";
-    wallet += bet * 1.5;
+    wallet += Number(bet * 1.5);
   } else {
     // Dealer reveals his cards and deals more if he doesn't have 17.
 
@@ -84,11 +84,11 @@ const settleGame = function () {
       // Scenario 4: Banker beats Player.
     } else if (bankerPoints > playerPoints) {
       winner = "Banker";
-      wallet -= bet;
+      wallet -= Number(bet);
       // Scenario 5: Player beats Banker.
     } else if (bankerPoints < playerPoints) {
       winner = "Player";
-      wallet += bet;
+      wallet += Number(bet);
       // Scenario 6: Draws
     } else {
       winner = "None";
