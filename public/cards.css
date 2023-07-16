@@ -107,3 +107,7 @@ img.cards {
 #reset-this-root {
   all: unset;
 }
+
+form {
+  display: inline-block;
+}

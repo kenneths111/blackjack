@@ -64,15 +64,25 @@
 
     <!-- Game Buttons: Hit, Stay and Next Game -->
     <div class="text-center">
+
+        <!-- If Player hasn't hit 'Stay', then show 'Hit' and 'Stay' buttons -->
         <% if (showBankerCards === false && winner === ""){ %>
+
+        <!-- If Player's points is less than 21, show 'Hit' button. Otherwise, disable 'Hit' button -->
         <% if (playerPoints < 21) { %>
         <form method="post" action="/hit">
             <button type="submit" style="width: 140px" class="btn btn-primary btn-lg">Hit</button>
         </form>
+        <% } else { %>
+        <button type="submit" style="width: 140px" class="btn btn-primary btn-lg" disabled>Hit</button>
         <% } %>
+
+        <!-- Show 'Stay' button no matter what. -->
         <form method="post" action="/stay">
             <button type="submit" style="width: 140px" class="btn btn-danger btn-lg">Stay</button>
         </form>
+
+        <!-- If Player has hit 'Stay', then show 'Next Game' button -->
         <% } else { %>
         <form method="post" action="/nextgame">
             <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
