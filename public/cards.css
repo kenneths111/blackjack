@@ -108,6 +108,14 @@ img.cards {
   all: unset;
 }
 
-/* form {
-  display: inline-block;
-} */
+h1 {
+  margin-bottom: 0rem;
+}
+
+p {
+  margin-bottom: 0rem;
+}
+
+hr {
+  margin: 0.75rem;
+}

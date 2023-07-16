@@ -76,13 +76,16 @@
         <div class="input-group mb-3">
             <span class="input-group-text">Bet:</span>
             <span class="input-group-text">$</span>
-            <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="10"
-                name="bet" required>
+            <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= bet %>"
+                name="bet" min="1" max="<%= wallet %>" required>
             <span class="input-group-text">.00</span>
         </div>
         <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
     </form>
     <% } %>
 </div>
+
+<hr class="border border-danger border-2 opacity-50">
+<p class="text-center">Bet: $<%= bet %>; Wallet: $<%= wallet %></p>
 
 <%- include("partials/footer") %>

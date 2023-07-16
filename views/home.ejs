@@ -1,3 +1,20 @@
 <%- include("partials/header") %>
 
+<h1 class="display-6 text-center">Welcome to BlackJack Fast!</h1>
+
+<p>You will start with $50 each game. How much would you like to bet for the first round?</p>
+
+<div>
+    <form method="post" action="/game">
+        <div class="input-group mb-3">
+            <span class="input-group-text">Bet:</span>
+            <span class="input-group-text">$</span>
+            <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="10"
+                name="bet" min="1" max="50" value="10" required>
+            <span class="input-group-text">.00</span>
+        </div>
+        <button type="submit" style="width: 140px" class="btn btn-warning btn-lg text-center">Start Game</button>
+    </form>
+</div>
+
 <%- include("partials/footer") %>
