@@ -40,6 +40,9 @@ const startGame = function () {
   bankerCards.push(logic.randomDrawOne(deck));
   bankerPoints = logic.countPoints(bankerCards);
   showBankerCards = false;
+
+  // Clear winner value
+  winner = "";
 };
 
 // Define Settle Game function. I need to refactor this to move it into logic.js.
@@ -103,17 +106,22 @@ startGame();
 // Starts when player goes to page. Player has to choose bet amount.
 app.get("/", function (req, res) {
   res.render("home");
-  startGame();
 });
 
 // Starts when player goes to page
 app.post("/game", function (req, res) {
+  // Start game when the player cicks on 'Start Game' from home page
+  startGame();
+
   // Update bet based on user inputs
   bet = req.body.bet;
   console.log(bet);
+
+  // Reset the wallet each time someone starts a game from homepage
+  // This is to prevent users from going to an unfinished game
+  wallet = 100;
   console.log(wallet);
 
-  // Show two cards on screen.
   res.redirect("/game");
 });
 
