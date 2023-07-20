@@ -1,5 +1,6 @@
 const express = require("express");
 const ejs = require("ejs");
+const morgan = require("morgan");
 const { checkNatural } = require("./logic");
 const bodyParser = require("body-parser");
 const app = express();
@@ -9,6 +10,7 @@ app.set("view engine", "ejs");
 app.use(express.static("images"));
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(morgan("tiny"));
 
 // Define key game variables;
 
