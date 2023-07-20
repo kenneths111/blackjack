@@ -20,11 +20,11 @@
 <div class="col hand hhand-compact active-hand">
 
     <% if (showBankerCards === false){ %>
-    <img class="cards" src="cards/<%= bankerCards[0].img %>">
-    <img class="cards" src="cards/Red_Back.svg">
+    <img class="cards" src="/images/cards/<%= bankerCards[0].img %>">
+    <img class="cards" src="/images/cards/Red_Back.svg">
     <% } else { %>
     <% for (let i = 0; i < bankerCards.length; i++){ %>
-    <img class="cards" src="cards/<%= bankerCards[i].img %>">
+    <img class="cards" src="/images/cards/<%= bankerCards[i].img %>">
     <% } %>
     <% } %>
 
@@ -46,7 +46,7 @@
 <div class="col hand hhand-compact active-hand">
 
     <% for (let i = 0; i < playerCards.length; i++){ %>
-    <img class="cards" src="cards/<%= playerCards[i].img %>" width="70">
+    <img class="cards" src="/images/cards/<%= playerCards[i].img %>" width="70">
     <% } %>
 </div>
 

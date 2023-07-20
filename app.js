@@ -7,9 +7,10 @@ const app = express();
 const logic = require(__dirname + "/logic.js");
 
 app.set("view engine", "ejs");
-app.use(express.static("images"));
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Morgan middleware is used to log the HTTP requests and time taken.
 app.use(morgan("tiny"));
 
 // Define key game variables;
