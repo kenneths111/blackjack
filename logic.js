@@ -1,3 +1,5 @@
+const logic = require(__dirname + "/logic.js");
+
 exports.createDeck = function () {
   let deck = [];
 
@@ -124,4 +126,99 @@ exports.checkNatural = function (hand) {
   } else {
     return false;
   }
+};
+
+// Create Game Data for a new player
+exports.createGameData = function () {
+  let gameDataObject = {
+    playerCards: [],
+    playerPoints: 0,
+    bankerCards: [],
+    bankerPoints: 0,
+    showBankerCards: false,
+    deck: [],
+    winner: "",
+    wallet: 100,
+    bet: 0,
+  };
+  return gameDataObject;
+};
+
+exports.startGame = function (gameData) {
+  // Shuffle deck
+  gameData.deck = logic.createDeck();
+
+  // Draw two cards for the player
+  gameData.playerCards = [];
+  gameData.playerCards.push(logic.randomDrawOne(gameData.deck));
+  gameData.playerCards.push(logic.randomDrawOne(gameData.deck));
+  gameData.playerPoints = logic.countPoints(gameData.playerCards);
+
+  // Draw two cards for the banker
+  gameData.bankerCards = [];
+  gameData.bankerCards.push(logic.randomDrawOne(gameData.deck));
+  gameData.bankerCards.push(logic.randomDrawOne(gameData.deck));
+  gameData.bankerPoints = logic.countPoints(gameData.bankerCards);
+  gameData.showBankerCards = false;
+
+  // Clear winner value
+  gameData.winner = "";
+
+  return gameData;
+};
+
+// Define Settle Game function. I need to refactor this to move it into logic.js.
+
+exports.settleGame = function (gameData) {
+  gameData.winner = "";
+  gameData.showBankerCards = true;
+
+  // Scenario 1: Player busts. Game ends right away.
+  if (gameData.playerPoints > 21) {
+    // Game ends
+    console.log("Player busts. Game over!");
+    gameData.winner = "Banker";
+    gameData.wallet -= Number(gameData.bet);
+  } else if (
+    // Scenario 2: Player has a Natural, but Banker doesn't.
+    gameData.playerPoints === 21 &&
+    logic.checkNatural(gameData.playerCards) &&
+    !logic.checkNatural(gameData.bankerCards)
+  ) {
+    console.log("Player has a Natural");
+    gameData.winner = "Player";
+    gameData.wallet += Number(gameData.bet * 1.5);
+  } else {
+    // Dealer reveals his cards and deals more if he doesn't have 17.
+
+    // Reveal banker's cards when player clicks on 'Stand'
+    if (gameData.showBankerCards === true) {
+      gameData.bankerPoints = logic.countPoints(gameData.bankerCards);
+
+      // Banker draws another card if he doesn't have at least 17.
+      while (gameData.bankerPoints < 17) {
+        gameData.bankerCards.push(logic.randomDrawOne(gameData.deck));
+        gameData.bankerPoints = logic.countPoints(gameData.bankerCards);
+      }
+    }
+
+    //Scenario 3: Banker busts.
+    if (gameData.bankerPoints > 21) {
+      gameData.winner = "Player";
+      gameData.wallet += Number(gameData.bet);
+      // Scenario 4: Banker beats Player.
+    } else if (gameData.bankerPoints > gameData.playerPoints) {
+      gameData.winner = "Banker";
+      gameData.wallet -= Number(gameData.bet);
+      // Scenario 5: Player beats Banker.
+    } else if (gameData.bankerPoints < gameData.playerPoints) {
+      gameData.winner = "Player";
+      gameData.wallet += Number(gameData.bet);
+      // Scenario 6: Draws
+    } else {
+      gameData.winner = "None";
+    }
+  }
+
+  return gameData;
 };

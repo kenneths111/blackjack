@@ -1,129 +1,68 @@
 const express = require("express");
 const ejs = require("ejs");
 const morgan = require("morgan");
-const { checkNatural } = require("./logic");
 const bodyParser = require("body-parser");
 const app = express();
 const logic = require(__dirname + "/logic.js");
+const session = require("express-session");
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: "Key that will sign my cookie",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // Morgan middleware is used to log the HTTP requests and time taken.
 app.use(morgan("tiny"));
 
 // Define key game variables;
 
-let playerCards;
-let playerPoints;
-let bankerCards;
-let bankerPoints;
-let showBankerCards;
-let deck;
-let winner = "";
-let wallet = 100;
-let bet = 0;
-
-// Define Start Game function. I need to refactor this later to push this function to logic.js
-
-const startGame = function () {
-  // Shuffle deck
-  deck = logic.createDeck();
-
-  // Draw two cards for the player
-  playerCards = [];
-  playerCards.push(logic.randomDrawOne(deck));
-  playerCards.push(logic.randomDrawOne(deck));
-  playerPoints = logic.countPoints(playerCards);
-
-  // Draw two cards for the banker
-  bankerCards = [];
-  bankerCards.push(logic.randomDrawOne(deck));
-  bankerCards.push(logic.randomDrawOne(deck));
-  bankerPoints = logic.countPoints(bankerCards);
-  showBankerCards = false;
-
-  // Clear winner value
-  winner = "";
-};
-
-// Define Settle Game function. I need to refactor this to move it into logic.js.
-
-const settleGame = function () {
-  winner = "";
-  showBankerCards = true;
-
-  // Scenario 1: Player busts. Game ends right away.
-  if (playerPoints > 21) {
-    // Game ends
-    console.log("Player busts. Game over!");
-    winner = "Banker";
-    wallet -= Number(bet);
-  } else if (
-    // Scenario 2: Player has a Natural, but Banker doesn't.
-    playerPoints === 21 &&
-    checkNatural(playerCards) &&
-    !checkNatural(bankerCards)
-  ) {
-    console.log("Player has a Natural");
-    winner = "Player";
-    wallet += Number(bet * 1.5);
-  } else {
-    // Dealer reveals his cards and deals more if he doesn't have 17.
-
-    // Reveal banker's cards when player clicks on 'Stand'
-    if (showBankerCards === true) {
-      bankerPoints = logic.countPoints(bankerCards);
-
-      // Banker draws another card if he doesn't have at least 17.
-      while (bankerPoints < 17) {
-        bankerCards.push(logic.randomDrawOne(deck));
-        bankerPoints = logic.countPoints(bankerCards);
-      }
-    }
-
-    //Scenario 3: Banker busts.
-    if (bankerPoints > 21) {
-      winner = "Player";
-      wallet += Number(bet);
-      // Scenario 4: Banker beats Player.
-    } else if (bankerPoints > playerPoints) {
-      winner = "Banker";
-      wallet -= Number(bet);
-      // Scenario 5: Player beats Banker.
-    } else if (bankerPoints < playerPoints) {
-      winner = "Player";
-      wallet += Number(bet);
-      // Scenario 6: Draws
-    } else {
-      winner = "None";
-    }
-  }
-
-  return winner;
-};
-
-startGame();
+let sessionArray = [];
+let gameData = [];
 
 // Starts when player goes to page. Player has to choose bet amount.
 app.get("/", function (req, res) {
+  // This adds a new key-value pair in the session object called 'isAuth' and whose value is true. By modifying the session object, express-session package will keep the session.id constant. This allows me to identify the same user.
+  req.session.isAuth = true;
+
+  if (!sessionArray.includes(req.session.id)) {
+    // Save the session ID in an array, so I can find it later on.
+    sessionArray.push(req.session.id);
+    gameData.push(logic.createGameData());
+    console.log("User doesn't exist. Will create game data for user.");
+
+    // Record the position on the gameData array, so that you won't need to do a search each time you want to retrieve the gameData row.
+    req.session.gameDataPosition = gameData.length - 1;
+  }
+
+  console.log(req.session);
+  console.log(req.session.id);
+  console.log(gameData[req.session.gameDataPosition]);
+
+  // Render the home page for the user.
   res.render("home");
 });
 
 // Starts when player goes to page
 app.post("/game", function (req, res) {
   // Start game when the player cicks on 'Start Game' from home page
-  startGame();
+  gameData[req.session.gameDataPosition] = logic.startGame(
+    gameData[req.session.gameDataPosition]
+  );
 
   // Update bet based on user inputs
-  bet = req.body.bet;
-  console.log(bet);
+  gameData[req.session.gameDataPosition].bet = req.body.bet;
+  console.log(gameData[req.session.gameDataPosition].bet);
 
   // Reset the wallet each time someone starts a game from homepage
   // This is to prevent users from going to an unfinished game
-  wallet = 100;
-  console.log(wallet);
+  gameData[req.session.gameDataPosition].bet.wallet = 100;
+  console.log(gameData[req.session.gameDataPosition].wallet);
 
   res.redirect("/game");
 });
@@ -131,55 +70,68 @@ app.post("/game", function (req, res) {
 // Starts when player goes to page
 app.get("/game", function (req, res) {
   // If the user navigates to "/game" without setting betting amount, we will direct user to home page.
-  if (bet === 0) {
+  if (gameData[req.session.gameDataPosition].bet === 0) {
     res.render("home");
   } else {
     // Count player's points. Remove 'Hit' button if player is 21 points.
-    playerPoints = logic.countPoints(playerCards);
+    gameData[req.session.gameDataPosition].playerPoints = logic.countPoints(
+      gameData[req.session.gameDataPosition].playerCards
+    );
 
     // Show two cards on screen.
     res.render("game", {
-      playerCards: playerCards,
-      playerPoints: playerPoints,
-      bankerCards: bankerCards,
-      bankerPoints: bankerPoints,
-      showBankerCards: showBankerCards,
-      winner: winner,
-      bet: bet,
-      wallet: wallet,
+      playerCards: gameData[req.session.gameDataPosition].playerCards,
+      playerPoints: gameData[req.session.gameDataPosition].playerPoints,
+      bankerCards: gameData[req.session.gameDataPosition].bankerCards,
+      bankerPoints: gameData[req.session.gameDataPosition].bankerPoints,
+      showBankerCards: gameData[req.session.gameDataPosition].showBankerCards,
+      winner: gameData[req.session.gameDataPosition].winner,
+      bet: gameData[req.session.gameDataPosition].bet,
+      wallet: gameData[req.session.gameDataPosition].wallet,
     });
   }
 });
 
 app.post("/hit", function (req, res) {
   console.log("Player Hits!");
-  playerPoints = logic.countPoints(playerCards);
-  if (playerPoints < 21) {
-    playerCards.push(logic.randomDrawOne(deck));
+  gameData[req.session.gameDataPosition].playerPoints = logic.countPoints(
+    gameData[req.session.gameDataPosition].playerCards
+  );
+  if (gameData[req.session.gameDataPosition].playerPoints < 21) {
+    gameData[req.session.gameDataPosition].playerCards.push(
+      logic.randomDrawOne(gameData[req.session.gameDataPosition].deck)
+    );
   }
   res.redirect("/game");
 });
 
 app.post("/stay", function (req, res) {
   console.log("Player Stays!");
-  settleGame();
+  gameData[req.session.gameDataPosition] = logic.settleGame(
+    gameData[req.session.gameDataPosition]
+  );
   res.redirect("/game");
 });
 
 app.post("/nextgame", function (req, res) {
-  bet = Number(req.body.bet);
-  startGame();
+  gameData[req.session.gameDataPosition].bet = Number(req.body.bet);
+  gameData[req.session.gameDataPosition] = logic.startGame(
+    gameData[req.session.gameDataPosition]
+  );
+
   winner = "";
   res.redirect("/game");
 });
 
 app.post("/gameover", function (req, res) {
-  startGame();
+  gameData[req.session.gameDataPosition] = logic.startGame(
+    gameData[req.session.gameDataPosition]
+  );
 
   // Reset all the game variables.
-  winner = "";
-  wallet = 100;
-  bet = 0;
+  gameData[req.session.gameDataPosition].winner = "";
+  gameData[req.session.gameDataPosition].wallet = 100;
+  gameData[req.session.gameDataPosition].bet = 0;
 
   res.redirect("/");
 });
