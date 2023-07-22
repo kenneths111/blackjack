@@ -20,14 +20,15 @@ app.use(
 // Morgan middleware is used to log the HTTP requests and time taken.
 app.use(morgan("tiny"));
 
-// Define key game variables;
-
+// Define key game variables. I will need to refactor these in future to move it to a database.
 let sessionArray = [];
 let gameData = [];
 
 // Starts when player goes to page. Player has to choose bet amount.
 app.get("/", function (req, res) {
-  // This adds a new key-value pair in the session object called 'isAuth' and whose value is true. By modifying the session object, express-session package will keep the session.id constant. This allows me to identify the same user.
+  console.log("Going to home page.");
+
+  // Add a new key-value pair in the session object called 'isAuth' and whose value is true. By modifying the session object, express-session package will keep the session.id constant. This allows me to identify the same user.
   req.session.isAuth = true;
 
   if (!sessionArray.includes(req.session.id)) {
@@ -35,43 +36,60 @@ app.get("/", function (req, res) {
     sessionArray.push(req.session.id);
     gameData.push(logic.createGameData());
     console.log("User doesn't exist. Will create game data for user.");
+    console.log(req.session);
+    console.log(req.session.id);
 
     // Record the position on the gameData array, so that you won't need to do a search each time you want to retrieve the gameData row.
     req.session.gameDataPosition = gameData.length - 1;
+  } else {
+    console.log(
+      "User exists in our session array. Will not create new game data."
+    );
+    console.log(req.session);
+    console.log(req.session.id);
   }
 
-  console.log(req.session);
-  console.log(req.session.id);
-  console.log(gameData[req.session.gameDataPosition]);
+  console.log(gameData[req.session.gameDataPosition].wallet);
 
-  // Render the home page for the user.
-  res.render("home");
+  // If Player has less than $100 in their wallet, render 'Home' page
+  if (gameData[req.session.gameDataPosition].wallet <= 100) {
+    // Render the home page for the user.
+    res.render("home");
+  } else {
+    // If Player has more than $100 in their wallet, bring them back to existing game
+    res.redirect("game");
+  }
 });
 
 // Starts when player goes to page
 app.post("/game", function (req, res) {
-  // Start game when the player cicks on 'Start Game' from home page
-  gameData[req.session.gameDataPosition] = logic.startGame(
-    gameData[req.session.gameDataPosition]
-  );
+  // If the user clicks on 'Start Game' button without an existing user session, redirect user to home page.
+  if (gameData[req.session.gameDataPosition] === undefined) {
+    res.redirect("/");
+  } else {
+    // Start game when the player clicks on 'Start Game' from home page
+    gameData[req.session.gameDataPosition] = logic.startGame(
+      gameData[req.session.gameDataPosition]
+    );
 
-  // Update bet based on user inputs
-  gameData[req.session.gameDataPosition].bet = req.body.bet;
-  console.log(gameData[req.session.gameDataPosition].bet);
+    // Reset the wallet each time someone starts a game from homepage.
+    gameData[req.session.gameDataPosition].bet.wallet = 100;
 
-  // Reset the wallet each time someone starts a game from homepage
-  // This is to prevent users from going to an unfinished game
-  gameData[req.session.gameDataPosition].bet.wallet = 100;
-  console.log(gameData[req.session.gameDataPosition].wallet);
-
-  res.redirect("/game");
+    // Update bet based on user inputs
+    gameData[req.session.gameDataPosition].bet = req.body.bet;
+    res.redirect("/game");
+  }
 });
 
 // Starts when player goes to page
 app.get("/game", function (req, res) {
-  // If the user navigates to "/game" without setting betting amount, we will direct user to home page.
-  if (gameData[req.session.gameDataPosition].bet === 0) {
-    res.render("home");
+  // If the user navigates to "/game" without having an existing user session, redirect user to home page.
+  if (gameData[req.session.gameDataPosition] === undefined) {
+    res.redirect("/");
+  }
+  // If the user navigates to "/game" without setting betting amount, redirect user to home page.
+  else if (gameData[req.session.gameDataPosition].bet === 0) {
+    res.redirect("/");
   } else {
     // Count player's points. Remove 'Hit' button if player is 21 points.
     gameData[req.session.gameDataPosition].playerPoints = logic.countPoints(
@@ -93,6 +111,10 @@ app.get("/game", function (req, res) {
 });
 
 app.post("/hit", function (req, res) {
+  // If the user clicks on 'Hit' button without an existing user session, redirect user to home page.
+  if (gameData[req.session.gameDataPosition] === undefined) {
+    res.redirect("/");
+  }
   console.log("Player Hits!");
   gameData[req.session.gameDataPosition].playerPoints = logic.countPoints(
     gameData[req.session.gameDataPosition].playerCards
@@ -106,6 +128,10 @@ app.post("/hit", function (req, res) {
 });
 
 app.post("/stay", function (req, res) {
+  // If the user clicks on 'Stay' button without an existing user session, redirect user to home page.
+  if (gameData[req.session.gameDataPosition] === undefined) {
+    res.redirect("/");
+  }
   console.log("Player Stays!");
   gameData[req.session.gameDataPosition] = logic.settleGame(
     gameData[req.session.gameDataPosition]
@@ -114,16 +140,26 @@ app.post("/stay", function (req, res) {
 });
 
 app.post("/nextgame", function (req, res) {
+  // If the user clicks on 'Next Game' button without an existing user session, redirect user to home page.
+  if (gameData[req.session.gameDataPosition] === undefined) {
+    res.redirect("/");
+  }
   gameData[req.session.gameDataPosition].bet = Number(req.body.bet);
   gameData[req.session.gameDataPosition] = logic.startGame(
     gameData[req.session.gameDataPosition]
   );
 
+  // Reset the winner
   winner = "";
   res.redirect("/game");
 });
 
 app.post("/gameover", function (req, res) {
+  // If the user clicks on 'Game Over' button without an existing user session, redirect user to home page.
+  if (gameData[req.session.gameDataPosition] === undefined) {
+    res.redirect("/");
+  }
+
   gameData[req.session.gameDataPosition] = logic.startGame(
     gameData[req.session.gameDataPosition]
   );

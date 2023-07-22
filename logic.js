@@ -145,29 +145,27 @@ exports.createGameData = function () {
 };
 
 exports.startGame = function (gameData) {
-  // Shuffle deck
+  // Clear last game's data (i.e. winner, player's hand and banker's hand)
+  gameData.winner = "";
+  gameData.bankerCards = [];
+  gameData.playerCards = [];
+
+  // Open a new deck
   gameData.deck = logic.createDeck();
 
   // Draw two cards for the player
-  gameData.playerCards = [];
   gameData.playerCards.push(logic.randomDrawOne(gameData.deck));
   gameData.playerCards.push(logic.randomDrawOne(gameData.deck));
   gameData.playerPoints = logic.countPoints(gameData.playerCards);
 
   // Draw two cards for the banker
-  gameData.bankerCards = [];
   gameData.bankerCards.push(logic.randomDrawOne(gameData.deck));
   gameData.bankerCards.push(logic.randomDrawOne(gameData.deck));
   gameData.bankerPoints = logic.countPoints(gameData.bankerCards);
   gameData.showBankerCards = false;
 
-  // Clear winner value
-  gameData.winner = "";
-
   return gameData;
 };
-
-// Define Settle Game function. I need to refactor this to move it into logic.js.
 
 exports.settleGame = function (gameData) {
   gameData.winner = "";
