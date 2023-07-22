@@ -84,7 +84,7 @@
         <div class="input-group mb-3">
             <span class="input-group-text">Bet:</span>
             <span class="input-group-text">$</span>
-            <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= bet %>"
+            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= bet %>"
                 name="bet" min="1" max="<%= wallet %>" required>
             <span class="input-group-text">.00</span>
         </div>
@@ -96,7 +96,7 @@
         <div class="input-group mb-3">
             <span class="input-group-text">Bet:</span>
             <span class="input-group-text">$</span>
-            <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= bet/2 %>"
+            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= bet/2 %>"
                 name="bet" min="1" max="<%= wallet %>" required>
             <span class="input-group-text">.00</span>
         </div>
@@ -108,7 +108,7 @@
         <div class="input-group mb-3">
             <span class="input-group-text">Bet:</span>
             <span class="input-group-text">$</span>
-            <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= bet %>"
+            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= bet %>"
                 name="bet">
             <span class="input-group-text">.00</span>
         </div>
