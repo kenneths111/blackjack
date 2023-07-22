@@ -140,6 +140,8 @@ exports.createGameData = function () {
     winner: "",
     wallet: 100,
     bet: 0,
+    doubleDown: false,
+    allowDoubleDown: false,
   };
   return gameDataObject;
 };
@@ -147,6 +149,8 @@ exports.createGameData = function () {
 exports.startGame = function (gameData) {
   // Clear last game's data (i.e. winner, player's hand and banker's hand)
   gameData.winner = "";
+  gameData.doubleDown = false;
+  gameData.allowDoubleDown = false;
   gameData.bankerCards = [];
   gameData.playerCards = [];
 
@@ -170,6 +174,10 @@ exports.startGame = function (gameData) {
 exports.settleGame = function (gameData) {
   gameData.winner = "";
   gameData.showBankerCards = true;
+
+  // Calculate points for player and banker
+  gameData.playerPoints = logic.countPoints(gameData.playerCards);
+  gameData.bankerPoints = logic.countPoints(gameData.bankerCards);
 
   // Scenario 1: Player busts. Game ends right away.
   if (gameData.playerPoints > 21) {

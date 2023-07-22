@@ -70,8 +70,16 @@
         <button type="submit" style="width: 140px" class="btn btn-danger btn-lg">Stay</button>
     </form>
 
+    <!-- If Player has 9, 10 or 11 AND only two cards on hand, show an additional 'Double Down' button -->
+    <% if (allowDoubleDown === true){ %>
+    <form method="post" action="/double" style="padding-top:5px">
+        <button type="submit" style="width:280px" class="btn btn-warning btn-lg">Double Down</button>
+    </form>
+    <% } %>
+
     <!-- If Player has hit 'Stay', then show 'Next Game' button -->
-    <% } else if (wallet >= 1) { %>
+    <!-- If the player didn't double down in the last game, keep the default bet value unchanged -->
+    <% } else if (wallet >= 1 && doubleDown === false) { %>
     <form method="post" action="/nextgame">
         <div class="input-group mb-3">
             <span class="input-group-text">Bet:</span>
@@ -82,6 +90,19 @@
         </div>
         <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
     </form>
+    <!-- If the player doubled down in the last game, half the default bet value -->
+    <% } else if (wallet >= 1 && doubleDown === true) { %>
+    <form method="post" action="/nextgame">
+        <div class="input-group mb-3">
+            <span class="input-group-text">Bet:</span>
+            <span class="input-group-text">$</span>
+            <input type="number" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= bet/2 %>"
+                name="bet" min="1" max="<%= wallet %>" required>
+            <span class="input-group-text">.00</span>
+        </div>
+        <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
+    </form>
+    <!-- If wallet less than $1, then show 'Game Over button' -->
     <% } else { %>
     <form method="post" action="/gameover">
         <div class="input-group mb-3">
@@ -94,6 +115,7 @@
         <button type="submit" style="width: 140px" class="btn btn-danger btn-lg">Game Over</button>
     </form>
     <% } %>
+
 </div>
 
 <hr class="border border-danger border-2 opacity-50">

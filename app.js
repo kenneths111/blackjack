@@ -96,6 +96,17 @@ app.get("/game", function (req, res) {
       gameData[req.session.gameDataPosition].playerCards
     );
 
+    // If Player has 9, 10 or 11 AND only two cards on hand, show an additional 'Double Down' button
+    if (gameData[req.session.gameDataPosition].playerCards.length === 2) {
+      switch (gameData[req.session.gameDataPosition].playerPoints) {
+        case 9:
+        case 10:
+        case 11:
+          gameData[req.session.gameDataPosition].allowDoubleDown = true;
+          break;
+      }
+    }
+
     // Show two cards on screen.
     res.render("game", {
       playerCards: gameData[req.session.gameDataPosition].playerCards,
@@ -106,6 +117,8 @@ app.get("/game", function (req, res) {
       winner: gameData[req.session.gameDataPosition].winner,
       bet: gameData[req.session.gameDataPosition].bet,
       wallet: gameData[req.session.gameDataPosition].wallet,
+      doubleDown: gameData[req.session.gameDataPosition].doubleDown,
+      allowDoubleDown: gameData[req.session.gameDataPosition].allowDoubleDown,
     });
   }
 });
@@ -115,6 +128,7 @@ app.post("/hit", function (req, res) {
   if (gameData[req.session.gameDataPosition] === undefined) {
     res.redirect("/");
   }
+
   console.log("Player Hits!");
   gameData[req.session.gameDataPosition].playerPoints = logic.countPoints(
     gameData[req.session.gameDataPosition].playerCards
@@ -139,6 +153,31 @@ app.post("/stay", function (req, res) {
   res.redirect("/game");
 });
 
+app.post("/double", function (req, res) {
+  // If the user clicks on 'Double' button without an existing user session, redirect user to home page.
+  if (gameData[req.session.gameDataPosition] === undefined) {
+    res.redirect("/");
+  }
+  console.log("Player Double Down!");
+
+  // Double bet
+  gameData[req.session.gameDataPosition].bet *= 2;
+  gameData[req.session.gameDataPosition].doubleDown = true;
+  console.log(gameData[req.session.gameDataPosition].doubleDown);
+
+  // Draw one card
+  gameData[req.session.gameDataPosition].playerCards.push(
+    logic.randomDrawOne(gameData[req.session.gameDataPosition].deck)
+  );
+
+  // Settle game
+  gameData[req.session.gameDataPosition] = logic.settleGame(
+    gameData[req.session.gameDataPosition]
+  );
+
+  res.redirect("/game");
+});
+
 app.post("/nextgame", function (req, res) {
   // If the user clicks on 'Next Game' button without an existing user session, redirect user to home page.
   if (gameData[req.session.gameDataPosition] === undefined) {
@@ -149,8 +188,6 @@ app.post("/nextgame", function (req, res) {
     gameData[req.session.gameDataPosition]
   );
 
-  // Reset the winner
-  winner = "";
   res.redirect("/game");
 });
 
