@@ -194,6 +194,15 @@ exports.settleGame = function (gameData) {
     console.log("Player has a Natural");
     gameData.winner = "Player";
     gameData.wallet += Number(gameData.bet * 1.5);
+  } else if (
+    // Scenario 3: Banker has a Natural, but Player doesn't.
+    gameData.bankerPoints === 21 &&
+    !logic.checkNatural(gameData.playerCards) &&
+    logic.checkNatural(gameData.bankerCards)
+  ) {
+    console.log("Banker has a Natural");
+    gameData.winner = "Banker";
+    gameData.wallet -= Number(gameData.bet);
   } else {
     // Dealer reveals his cards and deals more if he doesn't have 17.
 
@@ -208,19 +217,19 @@ exports.settleGame = function (gameData) {
       }
     }
 
-    //Scenario 3: Banker busts.
+    //Scenario 4: Banker busts.
     if (gameData.bankerPoints > 21) {
       gameData.winner = "Player";
       gameData.wallet += Number(gameData.bet);
-      // Scenario 4: Banker beats Player.
+      // Scenario 5: Banker beats Player.
     } else if (gameData.bankerPoints > gameData.playerPoints) {
       gameData.winner = "Banker";
       gameData.wallet -= Number(gameData.bet);
-      // Scenario 5: Player beats Banker.
+      // Scenario 6: Player beats Banker.
     } else if (gameData.bankerPoints < gameData.playerPoints) {
       gameData.winner = "Player";
       gameData.wallet += Number(gameData.bet);
-      // Scenario 6: Draws
+      // Scenario 7: Draws
     } else {
       gameData.winner = "None";
     }
