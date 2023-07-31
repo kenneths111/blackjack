@@ -142,7 +142,6 @@ exports.createGameData = function () {
     bet: 0,
     doubleDown: false,
     allowDoubleDown: false,
-    highScore: 100,
   };
   return gameDataObject;
 };
@@ -235,13 +234,6 @@ exports.settleGame = function (gameData) {
       gameData.winner = "None";
     }
   }
-
-  // Update high score
-  if (gameData.highScore < gameData.wallet) {
-    gameData.highScore = gameData.wallet;
-  }
-
-  console.log("High score: " + gameData.highScore);
 
   return gameData;
 };

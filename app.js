@@ -5,8 +5,6 @@ const bodyParser = require("body-parser");
 const app = express();
 const logic = require(__dirname + "/logic.js");
 const session = require("express-session");
-const db = require(__dirname + "/data/database.js");
-const { Client } = require("pg");
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -152,25 +150,6 @@ app.post("/stay", function (req, res) {
   gameData[req.session.gameDataPosition] = logic.settleGame(
     gameData[req.session.gameDataPosition]
   );
-
-  // Write game data to the database if wallet is less than $1.
-  if (
-    gameData[req.session.gameDataPosition].wallet < 1 &&
-    gameData[req.session.gameDataPosition].highScore > 100
-  ) {
-    db.query({
-      text: "INSERT INTO games(high_score, final_score) VALUES($1, $2)",
-      values: [
-        gameData[req.session.gameDataPosition].highScore,
-        gameData[req.session.gameDataPosition].wallet,
-      ],
-    });
-    console.log(
-      "Added Game Session. High score: " +
-        gameData[req.session.gameDataPosition].highScore
-    );
-  }
-
   res.redirect("/game");
 });
 
@@ -226,7 +205,6 @@ app.post("/gameover", function (req, res) {
   gameData[req.session.gameDataPosition].winner = "";
   gameData[req.session.gameDataPosition].wallet = 100;
   gameData[req.session.gameDataPosition].bet = 0;
-  gameData[req.session.gameDataPosition].highScore = 100;
 
   res.redirect("/");
 });
