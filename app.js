@@ -5,7 +5,8 @@ const bodyParser = require("body-parser");
 const app = express();
 const logic = require(__dirname + "/logic.js");
 const session = require("express-session");
-const db = require(__dirname + "/data/database.js");
+const path = require("path");
+const db = require(path.join(__dirname, "data", "database.js"));
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
