@@ -35,12 +35,12 @@ const client = new Client({
 
 client.connect();
 
-// client.query("Select * from GAMES", (err, res) => {
-//   if (!err) {
-//     console.log(res.rows);
-//   } else {
-//     console.log(err.message);
-//   }
-// });
+client.query("Select * from GAMES", (err, res) => {
+  if (!err) {
+    console.log(res.rows);
+  } else {
+    console.log(err.message);
+  }
+});
 
-// module.exports = client;
+module.exports = client;
