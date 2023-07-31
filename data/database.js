@@ -15,32 +15,32 @@ Banker: We will update this each time a player finishes a game (i.e. hits 'Game 
 - total_pot: total amount of money won by banker since beginning.
 */
 
-require("dotenv").config();
-const { Client } = require("pg");
-const fs = require("fs");
-const path = require("path");
-const caCertPath = path.join(__dirname, "..", "certs", "global-bundle.pem");
-const caCert = fs.readFileSync(caCertPath);
+// require("dotenv").config();
+// const { Client } = require("pg");
+// const fs = require("fs");
+// const path = require("path");
+// const caCertPath = path.join(__dirname, "..", "certs", "global-bundle.pem");
+// const caCert = fs.readFileSync(caCertPath);
 
-const client = new Client({
-  host: process.env.DB_HOST,
-  port: process.env.DB_PORT,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  ssl: {
-    ca: caCert,
-  },
-});
+// const client = new Client({
+//   host: process.env.DB_HOST,
+//   port: process.env.DB_PORT,
+//   user: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+//   database: process.env.DB_DATABASE,
+//   ssl: {
+//     ca: caCert,
+//   },
+// });
 
-client.connect();
+// client.connect();
 
-client.query("Select * from GAMES", (err, res) => {
-  if (!err) {
-    console.log(res.rows);
-  } else {
-    console.log(err.message);
-  }
-});
+// client.query("Select * from GAMES", (err, res) => {
+//   if (!err) {
+//     console.log(res.rows);
+//   } else {
+//     console.log(err.message);
+//   }
+// });
 
-module.exports = client;
+// module.exports = client;
