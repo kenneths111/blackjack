@@ -15,12 +15,12 @@ Banker: We will update this each time a player finishes a game (i.e. hits 'Game 
 - total_pot: total amount of money won by banker since beginning.
 */
 
-// require("dotenv").config();
-// const { Client } = require("pg");
-// const fs = require("fs");
-// const path = require("path");
-// const caCertPath = path.join(__dirname, "..", "certs", "global-bundle.pem");
-// const caCert = fs.readFileSync(caCertPath);
+require("dotenv").config();
+const { Client } = require("pg");
+const fs = require("fs");
+const path = require("path");
+const caCertPath = path.join(__dirname, "..", "certs", "global-bundle.pem");
+const caCert = fs.readFileSync(caCertPath);
 
 // const client = new Client({
 //   host: process.env.DB_HOST,
