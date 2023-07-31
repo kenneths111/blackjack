@@ -28,13 +28,11 @@ let gameData = [];
 
 // Starts when player goes to page. Player has to choose bet amount.
 app.get("/", function (req, res) {
-  console.log(req.session.id);
   console.log("Going to home page.");
-  res.render("home");
-});
 
-// Starts when player goes to page
-app.post("/game", function (req, res) {
+  // Add a new key-value pair in the session object called 'isAuth' and whose value is true. By modifying the session object, express-session package will keep the session.id constant. This allows me to identify the same user.
+  req.session.isAuth = true;
+
   if (!sessionArray.includes(req.session.id)) {
     // Save the session ID in an array, so I can find it later on.
     sessionArray.push(req.session.id);
@@ -53,6 +51,20 @@ app.post("/game", function (req, res) {
     console.log(req.session.id);
   }
 
+  console.log(gameData[req.session.gameDataPosition].wallet);
+
+  // If Player has less than $100 in their wallet, render 'Home' page
+  if (gameData[req.session.gameDataPosition].wallet <= 100) {
+    // Render the home page for the user.
+    res.render("home");
+  } else {
+    // If Player has more than $100 in their wallet, bring them back to existing game
+    res.redirect("game");
+  }
+});
+
+// Starts when player goes to page
+app.post("/game", function (req, res) {
   // If the user clicks on 'Start Game' button without an existing user session, redirect user to home page.
   if (gameData[req.session.gameDataPosition] === undefined) {
     res.redirect("/");
