@@ -33,7 +33,7 @@ const client = new Client({
   },
 });
 
-// client.connect();
+client.connect();
 
 // client.query("Select * from GAMES", (err, res) => {
 //   if (!err) {
