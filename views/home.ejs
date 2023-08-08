@@ -17,24 +17,47 @@
 
 <body>
 
-    <form class="form-signin" method="post" action="/game">
-        <div class="text-center mb-4">
-            <img class="mb-4" src="/images/logo.png" alt="" width="50%">
-            <h1 class=" h3 mb-3 font-weight-normal">BlackJack Fast</h1>
-            <p>Your objective is to win as much as possible with an initial pot of $100. How much would you like to bet
-                for the first round?</p>
+    <div class="container">
+
+        <div class="row">
+            <div class="col" style="font-size: 12;">
+                <form method="get" action="/highscore" class="text-end">
+                    <button class="btn btn-sm btn-warning btn-block" style="width:70px; font-size: 12px;" type="submit">
+                        High Scores
+                    </button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <form class="form-signin text-center" method="post" action="/game">
+                    <div class="text-center mb-4">
+                        <img class="mb-4" src="/images/logo.png" alt="" width="50%">
+                        <h1 class=" h3 mb-3 font-weight-normal">BlackJack Fast</h1>
+                        <p>Your objective is to win as much as possible with an initial pot of $100. How much would you
+                            like
+                            to
+                            bet
+                            for the first round?</p>
+                    </div>
+
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Bet:</span>
+                        <span class="input-group-text">$</span>
+                        <input type="number" pattern="\d*" pattern="[0-9]*" class=" form-control"
+                            aria-label="Amount (to the nearest dollar)" placeholder="10" name="bet" min="1" max="100"
+                            value="10" required>
+                    </div>
+
+                    <button class="btn btn-lg btn-primary btn-block" style="width:300px" type="submit">
+                        Start Game
+                    </button>
+                </form>
+            </div>
         </div>
 
-        <div class="input-group mb-3">
-            <span class="input-group-text">Bet:</span>
-            <span class="input-group-text">$</span>
-            <input type="number" pattern="\d*" pattern="[0-9]*" class=" form-control" aria-label="Amount (to the nearest dollar)"
-                placeholder="10" name="bet" min="1" max="100" value="10" required>
-        </div>
-
-        <button class="btn btn-lg btn-primary btn-block" style="width:100%" type="submit">Start Game</button>
         <p class="mt-5 mb-3 text-muted text-center">&copy; K-Sng 2023</p>
         <p class="text-muted text-center">&copy; Icon by Darius Dan (Flaticon)</p>
-    </form>
+    </div>
 
     <%- include("partials/footer") %>

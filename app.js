@@ -230,6 +230,14 @@ app.post("/gameover", function (req, res) {
   res.redirect("/");
 });
 
+app.get("/highscore", function (req, res) {
+  res.render("highscore");
+});
+
+app.get("/highscore-retro", function (req, res) {
+  res.render("highscore-retro");
+});
+
 app.listen(process.env.PORT || 3000, function () {
   console.log("Server is running on Port 3000.");
 });

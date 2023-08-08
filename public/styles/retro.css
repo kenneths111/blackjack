@@ -1,0 +1,41 @@
+body {
+  background-color: #000;
+  color: #fff;
+  font-family: "Press Start 2P", cursive;
+}
+
+.retro-font {
+  font-size: 36px;
+}
+
+.retro-table {
+  background-color: #111;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: auto;
+}
+
+.retro-table th,
+.retro-table td {
+  padding: 10px;
+  text-align: center;
+}
+
+.retro-table th {
+  background-color: #333;
+}
+
+.retro-table td {
+  background-color: #222;
+  border: 1px solid #444;
+}
+
+.retro-table td:first-child {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.retro-table td:last-child {
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
