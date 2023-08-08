@@ -21,7 +21,7 @@ app.use(
 // Morgan middleware is used to log the HTTP requests and time taken.
 app.use(morgan("tiny"));
 
-// Define key game variables. I will need to refactor these in future to move it to a database.
+// Define key game variables.
 let sessionArray = [];
 let gameData = [];
 
@@ -231,7 +231,21 @@ app.post("/gameover", function (req, res) {
 });
 
 app.get("/highscore", function (req, res) {
-  res.render("highscore");
+  let scoreList;
+
+  db.query("SELECT high_score, name from GAMES")
+    .then((queryResult) => {
+      if (queryResult.rows) {
+        scoreList = queryResult.rows;
+        scoreList.sort((a, b) => b.high_score - a.high_score);
+      }
+
+      res.render("highscore", { scoreList: scoreList });
+    })
+    .catch((error) => {
+      console.error("Error fetching high scores:", error);
+      res.status(500).send("Error fetching high scores");
+    });
 });
 
 app.get("/highscore-retro", function (req, res) {
