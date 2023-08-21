@@ -15,8 +15,13 @@ Banker: We will update this each time a player finishes a game (i.e. hits 'Game 
 - total_pot: total amount of money won by banker since beginning.
 */
 
+// This is to allow for .env configurations
 require("dotenv").config();
+
+// Importing Postgres package
 const { Client } = require("pg");
+
+// Creating the caCert for my SSL certificate
 const fs = require("fs");
 const path = require("path");
 const caCertPath = path.join(__dirname, "..", "certs", "global-bundle.pem");

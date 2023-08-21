@@ -39,3 +39,23 @@ body {
   border-top-right-radius: 8px;
   border-bottom-right-radius: 8px;
 }
+
+.retro-button {
+  display: inline-block;
+  text-align: end;
+  padding: 10px 20px;
+  font-family: "Press Start 2P", sans-serif;
+  font-size: 14px;
+  text-transform: uppercase;
+  border: none;
+  background-color: #f06c00;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 4px;
+  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* On Hover Effect */
+.retro-button:hover {
+  background-color: #d45600;
+}

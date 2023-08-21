@@ -5,10 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>High Scores - Retro Game Style</title>
-    <link rel="stylesheet" href="../retro.css">
     <link rel="stylesheet" href="styles/retro.css">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
 </head>
 
 <body>
@@ -25,23 +23,66 @@
             <tbody>
                 <tr>
                     <td>1</td>
-                    <td>Player 1</td>
-                    <td>1000</td>
+                    <td><%= topScorers[0].name %></td>
+                    <td>$<%= topScorers[0].high_score %></td>
                 </tr>
                 <tr>
                     <td>2</td>
-                    <td>Player 2</td>
-                    <td>800</td>
+                    <td><%= topScorers[1].name %></td>
+                    <td>$<%= topScorers[1].high_score %></td>
                 </tr>
                 <tr>
                     <td>3</td>
-                    <td>Player 3</td>
-                    <td>750</td>
+                    <td><%= topScorers[2].name %></td>
+                    <td>$<%= topScorers[2].high_score %></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td><%= topScorers[3].name %></td>
+                    <td>$<%= topScorers[3].high_score %></td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td><%= topScorers[4].name %></td>
+                    <td>$<%= topScorers[4].high_score %></td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td><%= topScorers[5].name %></td>
+                    <td>$<%= topScorers[5].high_score %></td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td><%= topScorers[6].name %></td>
+                    <td>$<%= topScorers[6].high_score %></td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td><%= topScorers[7].name %></td>
+                    <td>$<%= topScorers[7].high_score %></td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td><%= topScorers[8].name %></td>
+                    <td>$<%= topScorers[8].high_score %></td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td><%= topScorers[9].name %></td>
+                    <td>$<%= topScorers[9].high_score %></td>
                 </tr>
                 <!-- Add more high scores here -->
             </tbody>
         </table>
+        <br>
+        <div class="container mt-5 text-center">
+            <form method="get" action="/highscore" style="text-align: center;">
+                <button class="retro-button" type="submit">Back</button>
+            </form>
+        </div>
     </div>
+    <br>
+
 </body>
 
 </html>

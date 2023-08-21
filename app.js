@@ -25,6 +25,26 @@ app.use(morgan("tiny"));
 let sessionArray = [];
 let gameData = [];
 
+// Make a database query to populate the topScorer array with the top 10 players. I am storing the top 10 players in memory, so that the app wouldn't have to query the entire database each time I want to load the high scores. This approach is more scaleable, because if my games table becomes incredibly long, I would end up having to make expensive queries each time I want to display the high score table.
+
+let topScorers = [];
+
+db.query("SELECT high_score, name from GAMES")
+  .then((queryResult) => {
+    if (queryResult.rows) {
+      // Store the results in scoreList
+      let scoreList = queryResult.rows;
+      scoreList.sort((a, b) => b.high_score - a.high_score);
+      console.log(scoreList);
+      topScorers = scoreList.slice(0, 10);
+      console.log(topScorers);
+    }
+  })
+  .catch((error) => {
+    console.error("Error fetching high scores:", error);
+    res.status(500).send("Error fetching high scores");
+  });
+
 // Starts when player goes to page. Player has to choose bet amount.
 app.get("/", function (req, res) {
   console.log("Going to home page.");
@@ -157,17 +177,35 @@ app.post("/stay", function (req, res) {
     gameData[req.session.gameDataPosition].wallet < 1 &&
     gameData[req.session.gameDataPosition].highScore > 100
   ) {
-    db.query({
-      text: "INSERT INTO games(high_score, final_score) VALUES($1, $2)",
-      values: [
-        gameData[req.session.gameDataPosition].highScore,
-        gameData[req.session.gameDataPosition].wallet,
-      ],
-    });
-    console.log(
-      "Added Game Session. High score: " +
-        gameData[req.session.gameDataPosition].highScore
-    );
+    // Before I write game data to the database, I need to update topScorers array. If your score is higher than the 10th player in the game. I will add you to the array.
+    if (
+      gameData[req.session.gameDataPosition].highScore >=
+      topScorers[9].high_score
+    ) {
+      // Update Top Scorers
+      [gameData[req.session.gameDataPosition], topScorers] =
+        logic.updateTopScorer(
+          gameData[req.session.gameDataPosition],
+          topScorers
+        );
+
+      // console.log(gameData[req.session.gameDataPosition]);
+      // console.log(topScorers);
+      
+    } else {
+      db.query({
+        text: "INSERT INTO games(high_score, final_score, name) VALUES($1, $2, $3)",
+        values: [
+          gameData[req.session.gameDataPosition].highScore,
+          gameData[req.session.gameDataPosition].wallet,
+          gameData[req.session.gameDataPosition].name,
+        ],
+      });
+      console.log(
+        "Added Game Session. High score: " +
+          gameData[req.session.gameDataPosition].highScore
+      );
+    }
   }
 
   res.redirect("/game");
@@ -231,25 +269,11 @@ app.post("/gameover", function (req, res) {
 });
 
 app.get("/highscore", function (req, res) {
-  let scoreList;
-
-  db.query("SELECT high_score, name from GAMES")
-    .then((queryResult) => {
-      if (queryResult.rows) {
-        scoreList = queryResult.rows;
-        scoreList.sort((a, b) => b.high_score - a.high_score);
-      }
-
-      res.render("highscore", { scoreList: scoreList });
-    })
-    .catch((error) => {
-      console.error("Error fetching high scores:", error);
-      res.status(500).send("Error fetching high scores");
-    });
+  res.render("highscore", { topScorers: topScorers });
 });
 
 app.get("/highscore-retro", function (req, res) {
-  res.render("highscore-retro");
+  res.render("highscore-retro", { topScorers: topScorers });
 });
 
 app.listen(process.env.PORT || 3000, function () {

@@ -84,8 +84,8 @@ exports.countPoints = function (hand) {
     }
   }
 
-  console.log(hand);
-  console.log("Total points: " + points);
+  // console.log(hand);
+  // console.log("Total points: " + points);
 
   return points;
 };
@@ -241,7 +241,37 @@ exports.settleGame = function (gameData) {
     gameData.highScore = gameData.wallet;
   }
 
-  console.log("High score: " + gameData.highScore);
+  // console.log("High score: " + gameData.highScore);
 
   return gameData;
+};
+
+exports.updateTopScorer = function (gameData, topScorers) {
+  // Collect the name of the player
+  gameData.name = "Louis";
+
+  console.log("High score achieved! Creating player object now.");
+  // Create a player object, so you can insert it into the topScorers array!
+  playerObject = {
+    high_score: gameData.highScore,
+    name: gameData.name,
+  };
+  console.log(playerObject);
+
+  // Run a for loop to check which position are you in.
+  for (let i = 0; i <= 9; i++) {
+    if (playerObject.high_score > topScorers[i].high_score) {
+      console.log("Inserting player object into " + i + " position.");
+      topScorers.splice(i, 0, playerObject);
+      console.log(topScorers);
+
+      console.log("Removing the last value in the array");
+      topScorers.pop();
+      console.log(topScorers);
+
+      break;
+    }
+  }
+
+  return [gameData, topScorers];
 };

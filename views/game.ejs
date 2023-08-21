@@ -84,8 +84,8 @@
         <div class="input-group mb-3">
             <span class="input-group-text">Bet:</span>
             <span class="input-group-text">$</span>
-            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= bet %>"
-                name="bet" min="1" max="<%= wallet %>" required>
+            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)"
+                value="<%= bet %>" name="bet" min="1" max="<%= wallet %>" required>
         </div>
         <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
     </form>
@@ -95,8 +95,8 @@
         <div class="input-group mb-3">
             <span class="input-group-text">Bet:</span>
             <span class="input-group-text">$</span>
-            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= bet/2 %>"
-                name="bet" min="1" max="<%= wallet %>" required>
+            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)"
+                value="<%= bet/2 %>" name="bet" min="1" max="<%= wallet %>" required>
             <span class="input-group-text">.00</span>
         </div>
         <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
@@ -107,8 +107,8 @@
         <div class="input-group mb-3">
             <span class="input-group-text">Bet:</span>
             <span class="input-group-text">$</span>
-            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)" value="<%= bet %>"
-                name="bet">
+            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)"
+                value="<%= bet %>" name="bet">
             <span class="input-group-text">.00</span>
         </div>
         <button type="submit" style="width: 140px" class="btn btn-danger btn-lg">Game Over</button>
@@ -119,5 +119,34 @@
 
 <hr class="border border-danger border-2 opacity-50">
 <p class="text-center">Bet: $<%= bet %>; Wallet: $<%= wallet %></p>
+
+<!-- Button trigger modal
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    Hit Button
+</button> -->
+
+<!-- Modal -->
+<!-- <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color:black">Game Over!</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form>
+                <div class="modal-body mb-3" style="color:dimgrey">
+                    Congrats! You came in within the top 10 score for Black Jack fast. Leave your name for the high
+                    score board.
+                    <input type="text" class="form-control mt-3" id="player-name">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Understood</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> -->
 
 <%- include("partials/footer") %>
