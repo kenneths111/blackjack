@@ -143,6 +143,7 @@ exports.createGameData = function () {
     doubleDown: false,
     allowDoubleDown: false,
     highScore: 100,
+    highScorer: false,
   };
   return gameDataObject;
 };
@@ -247,14 +248,11 @@ exports.settleGame = function (gameData) {
 };
 
 exports.updateTopScorer = function (gameData, topScorers) {
-  // Collect the name of the player
-  gameData.name = "Louis";
-
   console.log("High score achieved! Creating player object now.");
   // Create a player object, so you can insert it into the topScorers array!
   playerObject = {
     high_score: gameData.highScore,
-    name: gameData.name,
+    name: gameData.playerName,
   };
   console.log(playerObject);
 

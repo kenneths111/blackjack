@@ -101,7 +101,21 @@
         </div>
         <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
     </form>
-    <!-- If wallet less than $1, then show 'Game Over button' -->
+    <!-- If wallet less than $1 and player is a high scorer, then show 'Game Over button' with modal to record high score -->
+    <% } else if (highScorer === true) { %>
+    <form method="post" action="/gameover">
+        <div class="input-group mb-3">
+            <span class="input-group-text">Bet:</span>
+            <span class="input-group-text">$</span>
+            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)"
+                value="<%= bet %>" name="bet">
+            <span class="input-group-text">.00</span>
+        </div>
+        <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            Game Over
+        </button>
+    </form>
+    <!-- If wallet less than $1 and player is not high scorer, then show 'Game Over button' -->
     <% } else { %>
     <form method="post" action="/gameover">
         <div class="input-group mb-3">
@@ -114,39 +128,40 @@
         <button type="submit" style="width: 140px" class="btn btn-danger btn-lg">Game Over</button>
     </form>
     <% } %>
-
 </div>
 
 <hr class="border border-danger border-2 opacity-50">
 <p class="text-center">Bet: $<%= bet %>; Wallet: $<%= wallet %></p>
 
-<!-- Button trigger modal
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-    Hit Button
+<!-- <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+    Game Over
 </button> -->
 
 <!-- Modal -->
-<!-- <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
     aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color:black">Game Over!</h1>
+                <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color:black">Congratulations!</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form>
+            <form method="post" action="/gameover">
                 <div class="modal-body mb-3" style="color:dimgrey">
-                    Congrats! You came in within the top 10 score for Black Jack fast. Leave your name for the high
+                    Well done! You came in within the top 10 score for Black Jack Fast. Leave your name for the high
                     score board.
-                    <input type="text" class="form-control mt-3" id="player-name">
+                    <input type="text" placeholder="Enter Your Name" class="form-control mt-3" id="player-name"
+                        name="playerName" required>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Understood</button>
-                </div>
+                    <button type="submit" class="btn btn-primary">Save Highscore</button>
+            </form>
+            <form method="post" action="/gameover">
+                <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Don't Save</button>
             </form>
         </div>
     </div>
-</div> -->
+</div>
+</div>
 
 <%- include("partials/footer") %>

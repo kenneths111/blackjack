@@ -94,7 +94,7 @@ app.post("/game", function (req, res) {
     );
 
     // Reset the wallet each time someone starts a game from homepage.
-    gameData[req.session.gameDataPosition].bet.wallet = 100;
+    gameData[req.session.gameDataPosition].wallet = 100;
 
     // Update bet based on user inputs
     gameData[req.session.gameDataPosition].bet = req.body.bet;
@@ -140,6 +140,7 @@ app.get("/game", function (req, res) {
       wallet: gameData[req.session.gameDataPosition].wallet,
       doubleDown: gameData[req.session.gameDataPosition].doubleDown,
       allowDoubleDown: gameData[req.session.gameDataPosition].allowDoubleDown,
+      highScorer: gameData[req.session.gameDataPosition].highScorer,
     });
   }
 });
@@ -172,40 +173,16 @@ app.post("/stay", function (req, res) {
     gameData[req.session.gameDataPosition]
   );
 
-  // Write game data to the database if wallet is less than $1.
+  // If the user's latest score is higher than the high score, then indicate true for highScorer boolean value
   if (
-    gameData[req.session.gameDataPosition].wallet < 1 &&
-    gameData[req.session.gameDataPosition].highScore > 100
+    gameData[req.session.gameDataPosition].highScore > topScorers[9].high_score
   ) {
-    // Before I write game data to the database, I need to update topScorers array. If your score is higher than the 10th player in the game. I will add you to the array.
-    if (
-      gameData[req.session.gameDataPosition].highScore >=
-      topScorers[9].high_score
-    ) {
-      // Update Top Scorers
-      [gameData[req.session.gameDataPosition], topScorers] =
-        logic.updateTopScorer(
-          gameData[req.session.gameDataPosition],
-          topScorers
-        );
-
-      // console.log(gameData[req.session.gameDataPosition]);
-      // console.log(topScorers);
-      
-    } else {
-      db.query({
-        text: "INSERT INTO games(high_score, final_score, name) VALUES($1, $2, $3)",
-        values: [
-          gameData[req.session.gameDataPosition].highScore,
-          gameData[req.session.gameDataPosition].wallet,
-          gameData[req.session.gameDataPosition].name,
-        ],
-      });
-      console.log(
-        "Added Game Session. High score: " +
-          gameData[req.session.gameDataPosition].highScore
-      );
-    }
+    gameData[req.session.gameDataPosition].highScorer = true;
+    console.log("Player exceeds the high score.");
+  } else {
+    // Check to make sure that player hasn't fallen behind the top scorers. This might happen in a scenario where there are multiple players playing.
+    gameData[req.session.gameDataPosition].highScorer = false;
+    console.log("Player is below the high score.");
   }
 
   res.redirect("/game");
@@ -255,17 +232,63 @@ app.post("/gameover", function (req, res) {
     res.redirect("/");
   }
 
-  gameData[req.session.gameDataPosition] = logic.startGame(
-    gameData[req.session.gameDataPosition]
-  );
+  // First check if the player is still a top scorer. This step is just a safeguard in case anything changes between when the player clicks on 'Stay' and 'Game Over'
+  if (
+    gameData[req.session.gameDataPosition].highScore >= topScorers[9].high_score
+  ) {
+    // If the player provides a name, then the player wants to save high score. Otherwise, the player doesn't want to save high score.
+    if (req.body.playerName != undefined) {
+      console.log("Name Provided. Updating gameData.");
+      gameData[req.session.gameDataPosition].playerName = req.body.playerName;
+    } else {
+      console.log("Player didn't provide name.");
+    }
 
-  // Reset all the game variables.
-  gameData[req.session.gameDataPosition].winner = "";
-  gameData[req.session.gameDataPosition].wallet = 100;
-  gameData[req.session.gameDataPosition].bet = 0;
-  gameData[req.session.gameDataPosition].highScore = 100;
+    // Update Top Scorers
+    [gameData[req.session.gameDataPosition], topScorers] =
+      logic.updateTopScorer(gameData[req.session.gameDataPosition], topScorers);
 
-  res.redirect("/");
+    // console.log(gameData[req.session.gameDataPosition]);
+    // console.log(topScorers);
+
+    db.query({
+      text: "INSERT INTO games(high_score, final_score, name) VALUES($1, $2, $3)",
+      values: [
+        gameData[req.session.gameDataPosition].highScore,
+        gameData[req.session.gameDataPosition].wallet,
+        gameData[req.session.gameDataPosition].playerName,
+      ],
+    });
+
+    console.log(
+      "Added Game Session. High score: " +
+        gameData[req.session.gameDataPosition].highScore
+    );
+
+    gameData[req.session.gameDataPosition] = logic.startGame(
+      gameData[req.session.gameDataPosition]
+    );
+
+    // Reset all the game variables.
+    gameData[req.session.gameDataPosition].winner = "";
+    gameData[req.session.gameDataPosition].wallet = 100;
+    gameData[req.session.gameDataPosition].bet = 0;
+    gameData[req.session.gameDataPosition].highScore = 100;
+
+    res.redirect("/highscore");
+  } else {
+    gameData[req.session.gameDataPosition] = logic.startGame(
+      gameData[req.session.gameDataPosition]
+    );
+
+    // Reset all the game variables.
+    gameData[req.session.gameDataPosition].winner = "";
+    gameData[req.session.gameDataPosition].wallet = 100;
+    gameData[req.session.gameDataPosition].bet = 0;
+    gameData[req.session.gameDataPosition].highScore = 100;
+
+    res.redirect("/");
+  }
 });
 
 app.get("/highscore", function (req, res) {
