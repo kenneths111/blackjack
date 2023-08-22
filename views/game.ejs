@@ -71,7 +71,7 @@
     </form>
 
     <!-- If Player has 9, 10 or 11 AND only two cards on hand, show an additional 'Double Down' button -->
-    <% if (allowDoubleDown === true){ %>
+    <% if (allowDoubleDown === true && playerCards.length === 2){ %>
     <form method="post" action="/double" style="padding-top:5px">
         <button type="submit" style="width:280px" class="btn btn-warning btn-lg">Double Down</button>
     </form>
