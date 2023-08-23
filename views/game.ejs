@@ -1,164 +1,167 @@
 <%- include("partials/header") %>
+<div class="container">
+    <!-- Your content here -->
 
-<!-- Header for Banker -->
-<% if (winner === "Banker"){ %>
-<h1 class="display-6 text-center" style="color:#52db34">🎉🎉 Banker Wins! 🎉🎉</h1>
-<% } else if (winner === "None") { %>
-<h1 class="display-6 text-center">Banker's Hand - Draw!</h1>
-<% } else {%>
-<h1 class="display-6 text-center">Banker's Hand</h1>
-<% } %>
+    <!-- Header for Banker -->
+    <% if (winner === "Banker"){ %>
+    <h1 class=" display-6 text-center" style="color:#52db34">🎉🎉 Banker Wins! 🎉🎉</h1>
+    <% } else if (winner === "None") { %>
+    <h1 class="display-6 text-center">Banker's Hand - Draw!</h1>
+    <% } else {%>
+    <h1 class="display-6 text-center">Banker's Hand</h1>
+    <% } %>
 
-<!-- Total Points for Banker -->
-<% if (showBankerCards === false){ %>
-<p class="display-10 text-center">Total points: ???</p>
-<% } else { %>
-<p class="display-10 text-center">Total points: <%= bankerPoints %> </p>
-<% } %>
-
-<!-- Banker's Hand -->
-<div class="col hand hhand-compact active-hand">
-
+    <!-- Total Points for Banker -->
     <% if (showBankerCards === false){ %>
-    <img class="cards" src="/images/cards/<%= bankerCards[0].img %>">
-    <img class="cards" src="/images/cards/Red_Back.svg">
+    <p class="display-10 text-center">Total points: ???</p>
     <% } else { %>
-    <% for (let i = 0; i < bankerCards.length; i++){ %>
-    <img class="cards" src="/images/cards/<%= bankerCards[i].img %>">
-    <% } %>
+    <p class="display-10 text-center">Total points: <%= bankerPoints %> </p>
     <% } %>
 
-</div>
+    <!-- Banker's Hand -->
+    <div class="col hand hhand-compact active-hand">
 
-<hr class="border border-danger border-2 opacity-50">
+        <% if (showBankerCards === false){ %>
+        <img class="cards" src="/images/cards/<%= bankerCards[0].img %>">
+        <img class="cards" src="/images/cards/Red_Back.svg">
+        <% } else { %>
+        <% for (let i = 0; i < bankerCards.length; i++){ %>
+        <img class="cards" src="/images/cards/<%= bankerCards[i].img %>">
+        <% } %>
+        <% } %>
 
-<!-- Header for Player -->
-<% if (winner === "Player"){ %>
-<h1 class="display-6 text-center" style="color:#52db34">🎉🎉 Player Wins 🎉🎉</h1>
-<% } else { %>
-<h1 class="display-6 text-center">Player's Hand</h1>
-<% } %>
+    </div>
 
-<!-- Total Points for Player -->
-<p class="display-10 text-center">Total points: <%= playerPoints %> </p>
+    <hr class="border border-danger border-2 opacity-50">
 
-<!-- Player's Hand -->
-<div class="col hand hhand-compact active-hand">
-
-    <% for (let i = 0; i < playerCards.length; i++){ %>
-    <img class="cards" src="/images/cards/<%= playerCards[i].img %>" width="70">
-    <% } %>
-</div>
-
-<!-- Game Buttons: Hit, Stay and Next Game -->
-<div class="text-center">
-
-    <!-- If Player hasn't hit 'Stay', then show 'Hit' and 'Stay' buttons -->
-    <% if (showBankerCards === false && winner === ""){ %>
-
-    <!-- If Player's points is less than 21, show 'Hit' button. Otherwise, disable 'Hit' button -->
-    <% if (playerPoints < 21) { %>
-    <form method="post" action="/hit" style="display: inline-block">
-        <button type="submit" style="width: 140px" class="btn btn-primary btn-lg">Hit</button>
-    </form>
+    <!-- Header for Player -->
+    <% if (winner === "Player"){ %>
+    <h1 class="display-6 text-center" style="color:#52db34">🎉🎉 Player Wins 🎉🎉</h1>
     <% } else { %>
-    <button type="submit" style="width: 140px" class="btn btn-primary btn-lg" disabled>Hit</button>
+    <h1 class="display-6 text-center">Player's Hand</h1>
     <% } %>
 
-    <!-- Show 'Stay' button no matter what. -->
-    <form method="post" action="/stay" style="display: inline-block">
-        <button type="submit" style="width: 140px" class="btn btn-danger btn-lg">Stay</button>
-    </form>
+    <!-- Total Points for Player -->
+    <p class="display-10 text-center">Total points: <%= playerPoints %> </p>
 
-    <!-- If Player has 9, 10 or 11 AND only two cards on hand, show an additional 'Double Down' button -->
-    <% if (allowDoubleDown === true && playerCards.length === 2){ %>
-    <form method="post" action="/double" style="padding-top:5px">
-        <button type="submit" style="width:280px" class="btn btn-warning btn-lg">Double Down</button>
-    </form>
-    <% } %>
+    <!-- Player's Hand -->
+    <div class="col hand hhand-compact active-hand">
 
-    <!-- If Player has hit 'Stay', then show 'Next Game' button -->
-    <!-- If the player didn't double down in the last game, keep the default bet value unchanged -->
-    <% } else if (wallet >= 1 && doubleDown === false) { %>
-    <form method="post" action="/nextgame">
-        <div class="input-group mb-3">
-            <span class="input-group-text">Bet:</span>
-            <span class="input-group-text">$</span>
-            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)"
-                value="<%= bet %>" name="bet" min="1" max="<%= wallet %>" required>
-        </div>
-        <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
-    </form>
-    <!-- If the player doubled down in the last game, half the default bet value -->
-    <% } else if (wallet >= 1 && doubleDown === true) { %>
-    <form method="post" action="/nextgame">
-        <div class="input-group mb-3">
-            <span class="input-group-text">Bet:</span>
-            <span class="input-group-text">$</span>
-            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)"
-                value="<%= bet/2 %>" name="bet" min="1" max="<%= wallet %>" required>
-            <span class="input-group-text">.00</span>
-        </div>
-        <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
-    </form>
-    <!-- If wallet less than $1 and player is a high scorer, then show 'Game Over button' with modal to record high score -->
-    <% } else if (highScorer === true) { %>
-    <form method="post" action="/gameover">
-        <div class="input-group mb-3">
-            <span class="input-group-text">Bet:</span>
-            <span class="input-group-text">$</span>
-            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)"
-                value="<%= bet %>" name="bet">
-            <span class="input-group-text">.00</span>
-        </div>
-        <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-            Game Over
-        </button>
-    </form>
-    <!-- If wallet less than $1 and player is not high scorer, then show 'Game Over button' -->
-    <% } else { %>
-    <form method="post" action="/gameover">
-        <div class="input-group mb-3">
-            <span class="input-group-text">Bet:</span>
-            <span class="input-group-text">$</span>
-            <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)"
-                value="<%= bet %>" name="bet">
-            <span class="input-group-text">.00</span>
-        </div>
-        <button type="submit" style="width: 140px" class="btn btn-danger btn-lg">Game Over</button>
-    </form>
-    <% } %>
-</div>
+        <% for (let i = 0; i < playerCards.length; i++){ %>
+        <img class="cards" src="/images/cards/<%= playerCards[i].img %>" width="70">
+        <% } %>
+    </div>
 
-<hr class="border border-danger border-2 opacity-50">
-<p class="text-center">Bet: $<%= bet %>; Wallet: $<%= wallet %></p>
+    <!-- Game Buttons: Hit, Stay and Next Game -->
+    <div class="text-center">
 
-<!-- <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        <!-- If Player hasn't hit 'Stay', then show 'Hit' and 'Stay' buttons -->
+        <% if (showBankerCards === false && winner === ""){ %>
+
+        <!-- If Player's points is less than 21, show 'Hit' button. Otherwise, disable 'Hit' button -->
+        <% if (playerPoints < 21) { %>
+        <form method="post" action="/hit" style="display: inline-block">
+            <button type="submit" style="width: 140px" class="btn btn-primary btn-lg">Hit</button>
+        </form>
+        <% } else { %>
+        <button type="submit" style="width: 140px" class="btn btn-primary btn-lg" disabled>Hit</button>
+        <% } %>
+
+        <!-- Show 'Stay' button no matter what. -->
+        <form method="post" action="/stay" style="display: inline-block">
+            <button type="submit" style="width: 140px" class="btn btn-danger btn-lg">Stay</button>
+        </form>
+
+        <!-- If Player has 9, 10 or 11 AND only two cards on hand, show an additional 'Double Down' button -->
+        <% if (allowDoubleDown === true && playerCards.length === 2){ %>
+        <form method="post" action="/double" style="padding-top:5px">
+            <button type="submit" style="width:280px" class="btn btn-warning btn-lg">Double Down</button>
+        </form>
+        <% } %>
+
+        <!-- If Player has hit 'Stay', then show 'Next Game' button -->
+        <!-- If the player didn't double down in the last game, keep the default bet value unchanged -->
+        <% } else if (wallet >= 1 && doubleDown === false) { %>
+        <form method="post" action="/nextgame">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Bet:</span>
+                <span class="input-group-text">$</span>
+                <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)"
+                    value="<%= bet %>" name="bet" min="1" max="<%= wallet %>" required>
+            </div>
+            <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
+        </form>
+        <!-- If the player doubled down in the last game, half the default bet value -->
+        <% } else if (wallet >= 1 && doubleDown === true) { %>
+        <form method="post" action="/nextgame">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Bet:</span>
+                <span class="input-group-text">$</span>
+                <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)"
+                    value="<%= bet/2 %>" name="bet" min="1" max="<%= wallet %>" required>
+                <span class="input-group-text">.00</span>
+            </div>
+            <button type="submit" style="width: 140px" class="btn btn-warning btn-lg">Next Game</button>
+        </form>
+        <!-- If wallet less than $1 and player is a high scorer, then show 'Game Over button' with modal to record high score -->
+        <% } else if (highScorer === true) { %>
+        <form method="post" action="/gameover">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Bet:</span>
+                <span class="input-group-text">$</span>
+                <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)"
+                    value="<%= bet %>" name="bet">
+                <span class="input-group-text">.00</span>
+            </div>
+            <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                Game Over
+            </button>
+        </form>
+        <!-- If wallet less than $1 and player is not high scorer, then show 'Game Over button' -->
+        <% } else { %>
+        <form method="post" action="/gameover">
+            <div class="input-group mb-3">
+                <span class="input-group-text">Bet:</span>
+                <span class="input-group-text">$</span>
+                <input type="number" pattern="\d*" class="form-control" aria-label="Amount (to the nearest dollar)"
+                    value="<%= bet %>" name="bet">
+                <span class="input-group-text">.00</span>
+            </div>
+            <button type="submit" style="width: 140px" class="btn btn-danger btn-lg">Game Over</button>
+        </form>
+        <% } %>
+    </div>
+
+    <hr class="border border-danger border-2 opacity-50">
+    <p class="text-center">Bet: $<%= bet %>; Wallet: $<%= wallet %></p>
+
+    <!-- <button type="button" class="btn btn-danger btn-lg" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
     Game Over
 </button> -->
 
-<!-- Modal -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-    aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color:black">Congratulations!</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <form method="post" action="/gameover">
-                <div class="modal-body mb-3" style="color:dimgrey">
-                    Well done! You came in within the top 10 score for Black Jack Fast. Leave your name for the high
-                    score board.
-                    <input type="text" placeholder="Enter Your Name" class="form-control mt-3" id="player-name"
-                        name="playerName" required>
+    <!-- Modal -->
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel" style="color:black">Congratulations!</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Save Highscore</button>
-            </form>
-            <form method="post" action="/gameover">
-                <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Don't Save</button>
-            </form>
+                <form method="post" action="/gameover">
+                    <div class="modal-body mb-3" style="color:dimgrey">
+                        Well done! You came in within the top 10 score for Black Jack Fast. Leave your name for the high
+                        score board.
+                        <input type="text" placeholder="Enter Your Name" class="form-control mt-3" id="player-name"
+                            name="playerName" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save Highscore</button>
+                </form>
+                <form method="post" action="/gameover">
+                    <button type="submit" class="btn btn-secondary" data-bs-dismiss="modal">Don't Save</button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
