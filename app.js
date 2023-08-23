@@ -232,18 +232,16 @@ app.post("/gameover", function (req, res) {
     res.redirect("/");
   }
 
-  // First check if the player is still a top scorer. This step is just a safeguard in case anything changes between when the player clicks on 'Stay' and 'Game Over'
-  if (
-    gameData[req.session.gameDataPosition].highScore >= topScorers[9].high_score
-  ) {
-    // If the player provides a name, then the player wants to save high score. Otherwise, the player doesn't want to save high score.
-    if (req.body.playerName != undefined) {
-      console.log("Name Provided. Updating gameData.");
-      gameData[req.session.gameDataPosition].playerName = req.body.playerName;
-    } else {
-      console.log("Player didn't provide name.");
-    }
+  // First check if the player is still a top scorer. This step is just a safeguard in case anything changes between when the player clicks on 'Stay' and 'Game Over'.
 
+  // Second check if player provides a name. If the player provides a name, then the player wants to save high score. Otherwise, the player doesn't want to save high score.
+  if (
+    gameData[req.session.gameDataPosition].highScore >=
+      topScorers[9].high_score &&
+    req.body.playerName != undefined
+  ) {
+    console.log("Name Provided. Updating gameData.");
+    gameData[req.session.gameDataPosition].playerName = req.body.playerName;
     // Update Top Scorers
     [gameData[req.session.gameDataPosition], topScorers] =
       logic.updateTopScorer(gameData[req.session.gameDataPosition], topScorers);
