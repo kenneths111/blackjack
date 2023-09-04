@@ -1,7 +1,5 @@
 # DS Store
-.github/.DS_Store
-public/.DS_Store
-views/.DS_Store
+.DS_Store
 
 # Logs
 logs
