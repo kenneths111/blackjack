@@ -1,3 +1,5 @@
+//Listing all the middleware being used
+
 const express = require("express");
 const ejs = require("ejs");
 const morgan = require("morgan");
