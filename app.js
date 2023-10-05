@@ -26,7 +26,7 @@ app.use(morgan("tiny"));
 // Adding a favicon so it looks nicer on web browser
 var favicon = require("serve-favicon");
 var path = require("path");
-app.use(favicon(path.join(__dirname, "public", "images", "favicon.png")));
+app.use(favicon(path.join(__dirname, "public", "images", "favicon.ico")));
 
 // Define key game variables.
 let sessionArray = [];
