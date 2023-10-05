@@ -23,6 +23,11 @@ app.use(
 // Morgan middleware is used to log the HTTP requests and time taken.
 app.use(morgan("tiny"));
 
+// Adding a favicon so it looks nicer on web browser
+var favicon = require("serve-favicon");
+var path = require("path");
+app.use(favicon(path.join(__dirname, "public", "images", "favicon.png")));
+
 // Define key game variables.
 let sessionArray = [];
 let gameData = [];
