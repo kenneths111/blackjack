@@ -273,3 +273,9 @@ exports.updateTopScorer = function (gameData, topScorers) {
 
   return [gameData, topScorers];
 };
+
+// Work-in-Progress: Calculate Dominant Strategy for Each Player/Banker Combination
+exports.checkDominantStrategy = function (playerHand, bankerHand) {
+  console.log("Player Hand: " + playerHand);
+  console.log("Banker Hand: " + bankerHand);
+};
