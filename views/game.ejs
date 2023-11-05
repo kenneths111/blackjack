@@ -153,7 +153,8 @@
                         Well done! You came in within the top 10 score for Black Jack Fast. Leave your name for the high
                         score board.
                         <input type="text" placeholder="Enter Your Name" class="form-control mt-3" id="player-name"
-                            name="playerName" required>
+                            name="playerName" required pattern="[A-Za-z0-9]+"
+                            title="Only letters and numbers are allowed">
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">Save Highscore</button>
