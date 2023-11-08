@@ -34,7 +34,7 @@ const client = new Client({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   ssl: {
-    ca: caCert,
+    ca: process.env.DB_SSL_CERT,
   },
 });
 
