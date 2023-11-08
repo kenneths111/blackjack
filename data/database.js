@@ -21,6 +21,12 @@ require("dotenv").config();
 // Importing Postgres package
 const { Client } = require("pg");
 
+// Creating the caCert for my SSL certificate
+const fs = require("fs");
+const path = require("path");
+const caCertPath = path.join(__dirname, "..", "certs", "global-bundle.pem");
+const caCert = fs.readFileSync(caCertPath);
+
 const client = new Client({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -28,7 +34,7 @@ const client = new Client({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   ssl: {
-    ca: process.env.DB_SSL_CERT,
+    ca: caCert,
   },
 });
 
