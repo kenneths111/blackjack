@@ -34,7 +34,14 @@ let gameData = [];
 
 // Make a database query to populate the topScorer array with the top 10 players. I am storing the top 10 players in memory, so that the app wouldn't have to query the entire database each time I want to load the high scores. This approach is more scaleable, because if my games table becomes incredibly long, I would end up having to make expensive queries each time I want to display the high score table.
 
-let topScorers = [];
+function createEmptyTopScorers() {
+  return Array.from({ length: 10 }, () => ({
+    high_score: 0,
+    name: "Anonymous",
+  }));
+}
+
+let topScorers = createEmptyTopScorers();
 
 db.query("SELECT high_score, name from GAMES")
   .then((queryResult) => {
@@ -44,13 +51,28 @@ db.query("SELECT high_score, name from GAMES")
       scoreList.sort((a, b) => b.high_score - a.high_score);
       console.log(scoreList);
       topScorers = scoreList.slice(0, 10);
+      while (topScorers.length < 10) {
+        topScorers.push({ high_score: 0, name: "Anonymous" });
+      }
       console.log(topScorers);
     }
   })
   .catch((error) => {
     console.error("Error fetching high scores:", error);
-    res.status(500).send("Error fetching high scores");
+    topScorers = createEmptyTopScorers();
   });
+
+function getHighScoreThreshold() {
+  if (topScorers.length === 0) {
+    return 0;
+  }
+
+  if (topScorers.length < 10) {
+    return topScorers[topScorers.length - 1].high_score || 0;
+  }
+
+  return topScorers[9].high_score;
+}
 
 // Starts when player goes to page. Player has to choose bet amount.
 app.get("/", function (req, res) {
@@ -182,7 +204,7 @@ app.post("/stay", function (req, res) {
 
   // If the user's latest score is higher than the high score, then indicate true for highScorer boolean value
   if (
-    gameData[req.session.gameDataPosition].highScore > topScorers[9].high_score
+    gameData[req.session.gameDataPosition].highScore > getHighScoreThreshold()
   ) {
     gameData[req.session.gameDataPosition].highScorer = true;
     console.log("Player exceeds the high score.");
@@ -244,7 +266,7 @@ app.post("/gameover", function (req, res) {
   // Second check if player provides a name. If the player provides a name, then the player wants to save high score. Otherwise, the player doesn't want to save high score.
   if (
     gameData[req.session.gameDataPosition].highScore >=
-      topScorers[9].high_score &&
+      getHighScoreThreshold() &&
     req.body.playerName != undefined
   ) {
     console.log("Name Provided. Updating gameData.");

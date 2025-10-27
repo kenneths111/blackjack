@@ -1,12 +1,10 @@
-const logic = require(__dirname + "/logic.js");
-
-exports.createDeck = function () {
-  let deck = [];
+function createDeck() {
+  const deck = [];
 
   for (let i = 1; i <= 13; i++) {
     for (let j = 1; j <= 4; j++) {
       // Create a card that is empty
-      var card = {};
+      const card = {};
 
       // Fill in the value and letter for the card
       switch (i) {
@@ -57,17 +55,17 @@ exports.createDeck = function () {
     }
   }
   return deck;
-};
+}
 
-exports.randomDrawOne = function (deck) {
-  let randomNumber = Math.floor(Math.random() * deck.length);
-  let chosenCard = deck.splice(randomNumber, 1);
+function randomDrawOne(deck) {
+  const randomNumber = Math.floor(Math.random() * deck.length);
+  const chosenCard = deck.splice(randomNumber, 1);
 
   // chosenCard is an array containing the object, so you need to use chosenCard[0] if you just want the card.
   return chosenCard[0];
-};
+}
 
-exports.countPoints = function (hand) {
+function countPoints(hand) {
   let points = 0;
   for (let i = 0; i < hand.length; i++) {
     points += hand[i].value;
@@ -88,11 +86,11 @@ exports.countPoints = function (hand) {
   // console.log("Total points: " + points);
 
   return points;
-};
+}
 
 // Check for Naturals
-exports.checkNatural = function (hand) {
-  if (hand.length != 2) {
+function checkNatural(hand) {
+  if (hand.length !== 2) {
     return false;
   }
 
@@ -105,14 +103,8 @@ exports.checkNatural = function (hand) {
         hasAce = true;
         break;
       case "J":
-        hasPicture = true;
-        break;
       case "Q":
-        hasPicture = true;
-        break;
       case "K":
-        hasPicture = true;
-        break;
       case 10:
         hasPicture = true;
         break;
@@ -126,11 +118,11 @@ exports.checkNatural = function (hand) {
   } else {
     return false;
   }
-};
+}
 
 // Create Game Data for a new player
-exports.createGameData = function () {
-  let gameDataObject = {
+function createGameData() {
+  const gameDataObject = {
     playerCards: [],
     playerPoints: 0,
     bankerCards: [],
@@ -146,9 +138,9 @@ exports.createGameData = function () {
     highScorer: false,
   };
   return gameDataObject;
-};
+}
 
-exports.startGame = function (gameData) {
+function startGame(gameData) {
   // Clear last game's data (i.e. winner, player's hand and banker's hand)
   gameData.winner = "";
   gameData.doubleDown = false;
@@ -157,29 +149,29 @@ exports.startGame = function (gameData) {
   gameData.playerCards = [];
 
   // Open a new deck
-  gameData.deck = logic.createDeck();
+  gameData.deck = createDeck();
 
   // Draw two cards for the player
-  gameData.playerCards.push(logic.randomDrawOne(gameData.deck));
-  gameData.playerCards.push(logic.randomDrawOne(gameData.deck));
-  gameData.playerPoints = logic.countPoints(gameData.playerCards);
+  gameData.playerCards.push(randomDrawOne(gameData.deck));
+  gameData.playerCards.push(randomDrawOne(gameData.deck));
+  gameData.playerPoints = countPoints(gameData.playerCards);
 
   // Draw two cards for the banker
-  gameData.bankerCards.push(logic.randomDrawOne(gameData.deck));
-  gameData.bankerCards.push(logic.randomDrawOne(gameData.deck));
-  gameData.bankerPoints = logic.countPoints(gameData.bankerCards);
+  gameData.bankerCards.push(randomDrawOne(gameData.deck));
+  gameData.bankerCards.push(randomDrawOne(gameData.deck));
+  gameData.bankerPoints = countPoints(gameData.bankerCards);
   gameData.showBankerCards = false;
 
   return gameData;
-};
+}
 
-exports.settleGame = function (gameData) {
+function settleGame(gameData) {
   gameData.winner = "";
   gameData.showBankerCards = true;
 
   // Calculate points for player and banker
-  gameData.playerPoints = logic.countPoints(gameData.playerCards);
-  gameData.bankerPoints = logic.countPoints(gameData.bankerCards);
+  gameData.playerPoints = countPoints(gameData.playerCards);
+  gameData.bankerPoints = countPoints(gameData.bankerCards);
 
   // Scenario 1: Player busts. Game ends right away.
   if (gameData.playerPoints > 21) {
@@ -190,8 +182,8 @@ exports.settleGame = function (gameData) {
   } else if (
     // Scenario 2: Player has a Natural, but Banker doesn't.
     gameData.playerPoints === 21 &&
-    logic.checkNatural(gameData.playerCards) &&
-    !logic.checkNatural(gameData.bankerCards)
+    checkNatural(gameData.playerCards) &&
+    !checkNatural(gameData.bankerCards)
   ) {
     console.log("Player has a Natural");
     gameData.winner = "Player";
@@ -199,8 +191,8 @@ exports.settleGame = function (gameData) {
   } else if (
     // Scenario 3: Banker has a Natural, but Player doesn't.
     gameData.bankerPoints === 21 &&
-    !logic.checkNatural(gameData.playerCards) &&
-    logic.checkNatural(gameData.bankerCards)
+    !checkNatural(gameData.playerCards) &&
+    checkNatural(gameData.bankerCards)
   ) {
     console.log("Banker has a Natural");
     gameData.winner = "Banker";
@@ -210,12 +202,12 @@ exports.settleGame = function (gameData) {
 
     // Reveal banker's cards when player clicks on 'Stand'
     if (gameData.showBankerCards === true) {
-      gameData.bankerPoints = logic.countPoints(gameData.bankerCards);
+      gameData.bankerPoints = countPoints(gameData.bankerCards);
 
       // Banker draws another card if he doesn't have at least 17.
       while (gameData.bankerPoints < 17) {
-        gameData.bankerCards.push(logic.randomDrawOne(gameData.deck));
-        gameData.bankerPoints = logic.countPoints(gameData.bankerCards);
+        gameData.bankerCards.push(randomDrawOne(gameData.deck));
+        gameData.bankerPoints = countPoints(gameData.bankerCards);
       }
     }
 
@@ -245,37 +237,52 @@ exports.settleGame = function (gameData) {
   // console.log("High score: " + gameData.highScore);
 
   return gameData;
-};
+}
 
-exports.updateTopScorer = function (gameData, topScorers) {
+function updateTopScorer(gameData, topScorers) {
   console.log("High score achieved! Creating player object now.");
   // Create a player object, so you can insert it into the topScorers array!
-  playerObject = {
+  const playerObject = {
     high_score: gameData.highScore,
     name: gameData.playerName,
   };
   console.log(playerObject);
 
-  // Run a for loop to check which position are you in.
-  for (let i = 0; i <= 9; i++) {
-    if (playerObject.high_score > topScorers[i].high_score) {
-      console.log("Inserting player object into " + i + " position.");
-      topScorers.splice(i, 0, playerObject);
-      console.log(topScorers);
+  const insertIndex = topScorers.findIndex(
+    (scorer) => playerObject.high_score > scorer.high_score
+  );
 
-      console.log("Removing the last value in the array");
-      topScorers.pop();
-      console.log(topScorers);
-
-      break;
+  if (insertIndex === -1) {
+    if (topScorers.length < 10) {
+      topScorers.push(playerObject);
     }
+  } else {
+    console.log("Inserting player object into " + insertIndex + " position.");
+    topScorers.splice(insertIndex, 0, playerObject);
+  }
+
+  if (topScorers.length > 10) {
+    console.log("Removing the last value in the array");
+    topScorers.pop();
   }
 
   return [gameData, topScorers];
-};
+}
 
 // Work-in-Progress: Calculate Dominant Strategy for Each Player/Banker Combination
-exports.checkDominantStrategy = function (playerHand, bankerHand) {
+function checkDominantStrategy(playerHand, bankerHand) {
   console.log("Player Hand: " + playerHand);
   console.log("Banker Hand: " + bankerHand);
+}
+
+module.exports = {
+  createDeck,
+  randomDrawOne,
+  countPoints,
+  checkNatural,
+  createGameData,
+  startGame,
+  settleGame,
+  updateTopScorer,
+  checkDominantStrategy,
 };
